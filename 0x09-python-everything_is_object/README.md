@@ -1,1 +1,1 @@
-This part focuses on Objects
+This part focuses on object
