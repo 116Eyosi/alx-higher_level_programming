@@ -1,31 +1,22 @@
 #!/usr/bin/python3
+# Creates the State “California” with the City “San Francisco”
+# from the database hbtn_0e_100_usa.
+# Usage: ./100-relationship_states_cities.py <mysql username> /
+#                                            <mysql password> /
+#                                            <database name>
+import sys
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from relationship_state import State
+from relationship_city import Base, City
 
-
-def getAllCities(user2, passward2, db2):
-    """ script that gets all the states when called on """
-    from sqlalchemy import create_engine
-    from sqlalchemy.orm import sessionmaker
-    from relationship_city import City
-    from relationship_state import Base, State
-
-    engine = create_engine('mysql+mysqldb://{}:{}@localhost:3306/{}'.format(
-                user2, passward2, db2))
+if __name__ == "__main__":
+    engine = create_engine("mysql+mysqldb://{}:{}@localhost/{}"
+                           .format(sys.argv[1], sys.argv[2], sys.argv[3]),
+                           pool_pre_ping=True)
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     session = Session()
-    c1 = City(name="San Francisco")
-    s1 = State(name="California", cities=[c1])
 
-    session.add(s1)
-    session.add(c1)
-
+    session.add(City(name="San Francisco", state=State(name="California")))
     session.commit()
-    session.close()
-    # engine = sqlalchemy.create_engine()
-    # db = MySQLdb.connect(host=MY_HOST, user=MY_USER, db=MY_DB)
-    # cur = db.cursor()
-
-if __name__ == "__main__":
-    import sys
-    """ protected from executing when imported """
-    getAllCities(sys.argv[1], sys.argv[2], sys.argv[3])
